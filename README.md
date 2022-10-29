@@ -163,7 +163,7 @@ Kemudian buka file wise.f02.com dan edit seperti gambar berikut
 nano /etc/bind/wise/wise.f02.com
 ```
 
-![](./media/image21.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image21.png)
 
 Restart bind9 dengan perintah
 
@@ -177,8 +177,7 @@ named -g //Bisa digunakan untuk restart sekaligus debugging
 
 Hasil ping wise.f02.com
 
-![](./media/image4.png){width="6.267716535433071in"
-height="2.3333333333333335in"}
+![](./media/image4.png)
 
 **3. Setelah itu ia juga ingin membuat subdomain eden.wise.yyy.com dengan alias www.eden.wise.yyy.com yang diatur DNS-nya di WISE dan mengarah ke Eden**
 
@@ -195,7 +194,7 @@ eden   IN      A       192.200.2.3
 www.eden IN    CNAME   eden.wise.f02.com.
 ```
 
-![](./media/image17.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image17.png)
 
 Restart service bind
 
@@ -213,8 +212,7 @@ ATAU
 host -t A eden.wise.f02.com
 ```
 
-![](./media/image5.png){width="6.267716535433071in"
-height="2.5833333333333335in"}
+![](./media/image5.png)
 
 **4. Buat juga reverse domain untuk domain utama**
 
@@ -260,8 +258,7 @@ Maka dicek menggunakan command :
 host -t PTR 192.200.2.2
 ```
 
-![](./media/image6.png){width="5.760416666666667in"
-height="0.4895833333333333in"}
+![](./media/image6.png)
 
 **5. Agar dapat tetap dihubungi jika server WISE bermasalah, buatlah juga Berlint sebagai DNS Slave untuk domain utama**
 
@@ -332,8 +329,7 @@ Lakukan ping ke wise.f02.com pada client. Jika ping berhasil maka konfigurasi DN
 nano /etc/bind/wise/wise.f02.com
 ```
 
-![](./media/image38.png){width="6.267716535433071in"
-height="3.263888888888889in"}
+![](./media/image38.png)
 
 Kemudian edit file /etc/bind/named.conf.options pada WISE.
 
@@ -375,7 +371,7 @@ allow-query{any;};
 
 Lalu edit file /etc/bind/named.conf.local menjadi seperti gambar di bawah:
 
-![](./media/image37.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image37.png)
 
 Kemudian buat direktori dengan nama operation. Copy db.local ke direktori tersebut dan edit namanya menjadi operation.wise.f02.com
 
@@ -386,7 +382,7 @@ cp /etc/bind/db.local /etc/bind/wise/operation.wise.f02.com
 
 Kemudian edit file operation.wise.f02.com menjadi seperti dibawah ini
 
-![](./media/image19.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image19.png)
 
 ```bash
 nano /etc/bind/operation/operation.wise.f02.com
@@ -402,8 +398,7 @@ III. Testing
 
 Ping operation.wise.f02.com pada client
 
-![](./media/image46.png){width="6.267716535433071in"
-height="1.7777777777777777in"}
+![](./media/image46.png)
 
 **7. Untuk informasi yang lebih spesifik mengenai Operation Strix, buatlah subdomain melalui Berlint dengan akses strix.operation.wise.yyy.com dengan alias www.strix.operation.wise.yyy.com yang mengarah ke Eden**
 
@@ -422,7 +417,7 @@ nano /etc/bind/operation/operation.wise.f02.com
 
 edit seperti dibawah ini :
 
-![](./media/image31.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image31.png)
 
 Restart bind9
 
@@ -432,8 +427,7 @@ service bind9 restart
 
 Lakukan ping ke domain strix.operation.wise.f02.com dan www.strix.operation.wise.f02.com dari client
 
-![](./media/image33.png){width="6.267716535433071in"
-height="1.6527777777777777in"}
+![](./media/image33.png)
 
 // tambahin disini
 
@@ -441,88 +435,76 @@ height="1.6527777777777777in"}
 
 Tambahkan configuration pada /etc/apache2/sites-available/strix.operation.wise.f02.com.conf
 
-![](./media/image12.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image12.png)
 
 Setting port
 
-![](./media/image39.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image39.png)
 
 Buat folder /var/www/strix.operation.wise.f02.com dan masukkan resource yang ada ke daam folder tersebut
 
-![](./media/image35.png){width="6.267716535433071in"
-height="0.4722222222222222in"}
+![](./media/image35.png)
 
 Restart apache2 kemudian akses
 **[[www.strix.operation.wise.yyy.com]{.underline}](http://www.strix.operation.wise.yyy.com)**
 dari client menggunakan port 15000 atau 15500
 
-![](./media/image40.png){width="6.267716535433071in"
-height="3.2777777777777777in"}
+![](./media/image40.png)
 
 Jika tanpa port
 
-![](./media/image23.png){width="6.267716535433071in"
-height="1.6388888888888888in"}
+![](./media/image23.png)
 
 **15. dengan autentikasi username Twilight dan password opStrix dan file di /var/www/strix.operation.wise.yyy**
 
 Masukkan command pada Eden:
 
-![](./media/image3.png){width="6.267716535433071in"
-height="0.4444444444444444in"}
+![](./media/image3.png)
 
 Tambahkan configuration pada /etc/apache2/sites-available/strix.operation.wise.f02.com.conf
 
-![](./media/image16.png){width="6.267716535433071in"
-height="3.236111111111111in"}
+![](./media/image16.png)
 
 Restart apache2 kemudian akses www.strix.operation.wise.yyy.com dari client menggunakan username dan password yang sudah di-setup
 
-![](./media/image36.png){width="6.267716535433071in"
-height="0.3055555555555556in"}
+![](./media/image36.png)
 
-![](./media/image34.png){width="2.15625in" height="0.53125in"}
+![](./media/image34.png)
 
 **16. dan setiap kali mengakses IP Eden akan dialihkan secara otomatis ke www.wise.yyy.com**
 
 Tambahkan konfigurasi pada /etc/apache2/sites-available/000-default.conf
 
-![](./media/image22.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image22.png)
 
 Tambahkan konfigurasi port apache2
 
-![](./media/image15.png){width="6.267716535433071in"
-height="3.263888888888889in"}
+![](./media/image15.png)
 
 Enable 000-default.conf kemudian restart service apache2, akses IP Eden dari client
 
-![](./media/image7.png){width="4.770833333333333in"
-height="0.6041666666666666in"}
+![](./media/image7.png)
 
-![](./media/image9.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image9.png)
 
 **17. Karena website www.eden.wise.yyy.com semakin banyak pengunjung dan banyak modifikasi sehingga banyak gambar-gambar yang random, maka Loid ingin mengubah request gambar yang memiliki substring "eden" akan diarahkan menuju eden.png**
 
 Tambahkan module rewrite pada .htaccess
 
-![](./media/image13.png){width="6.267716535433071in"
-height="3.263888888888889in"}
+![](./media/image13.png)
 
 Tambahkan konfigurasi pada /etc/apache2/sites-available/eden.wise.f02.com.conf
 
-![](./media/image30.png){width="6.267716535433071in" height="3.25in"}
+![](./media/image30.png)
 
 Kemudian enable module rewrite dan restart service apache2. Akses gambar dari client.
 
-![](./media/image25.png){width="6.267716535433071in"
-height="0.2777777777777778in"}
+![](./media/image25.png)
 
-![](./media/image27.png){width="5.25in" height="0.5968372703412074in"}
+![](./media/image27.png)
 
 Jika tanpa 'eden'
 
-![](./media/image2.png){width="6.267716535433071in"
-height="0.2638888888888889in"}
+![](./media/image2.png)
 
-![](./media/image47.png){width="6.267716535433071in"
-height="3.263888888888889in"}
+![](./media/image47.png)
