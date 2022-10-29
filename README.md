@@ -435,7 +435,98 @@ Lakukan ping ke domain strix.operation.wise.f02.com dan www.strix.operation.wise
 ![](./media/image33.png){width="6.267716535433071in"
 height="1.6527777777777777in"}
 
-// tambahin disini
+**8. Pertama dengan webserver www.wise.yyy.com. Pertama, Loid membutuhkan webserver dengan DocumentRoot pada /var/www/wise.yyy.com**
+
+Masukkan config pada /etc/apache2/sites-available/wise.f02.com.conf
+
+![](./media/image24.png){width="6.267716535433071in"
+height="3.263888888888889in"}
+
+Download resource kemudian pindahkan ke /var/www/wise.f02.com
+
+![](./media/image29.png){width="6.267716535433071in"
+height="0.5416666666666666in"}
+
+Enable site wise.f02.com dan disable site 000-default, restart service
+apache2
+
+![](./media/image1.png){width="3.375in" height="0.7083333333333334in"}
+
+Kembalikan nameserver ke IP WISE, testing client
+
+![](./media/image14.png){width="6.267716535433071in" height="3.25in"}
+
+**9. Setelah itu, Loid juga membutuhkan agar url www.wise.yyy.com/index.php/home dapat menjadi menjadi www.wise.yyy.com/home**
+
+Isi /var/www/wise.f02.com/.htaccess
+
+![](./media/image44.png){width="6.267716535433071in"
+height="3.263888888888889in"}
+
+Isi /etc/apache2/sites-available/wise.f02.com.conf
+
+![](./media/image45.png){width="6.267716535433071in" height="3.25in"}
+
+Enable module rewrite kemudian restart service apache2
+
+![](./media/image43.png){width="6.267716535433071in"
+height="3.263888888888889in"}
+
+**10. Setelah itu, pada subdomain www.eden.wise.yyy.com, Loid membutuhkan penyimpanan aset yang memiliki DocumentRoot pada /var/www/eden.wise.yyy.com**
+
+Isi /etc/apache2/sites-available/eden.wise.f02.com.conf
+
+![](./media/image11.png){width="6.267716535433071in"
+height="3.263888888888889in"}
+
+Download resource dan pindahkan ke /var/www/eden.wise.f02.com
+
+![](./media/image10.png){width="6.267716535433071in"
+height="0.4444444444444444in"}
+
+Enable site eden.wise.f02.com dan restart service apache2
+
+![](./media/image8.png){width="3.7604166666666665in"
+height="0.4895833333333333in"}
+
+Testing:
+
+![](./media/image48.png){width="6.267716535433071in"
+height="3.236111111111111in"}
+
+**11. Akan tetapi, pada folder /public, Loid ingin hanya dapat melakukan directory listing saja**
+
+Isi /etc/apache2/sites-available/eden.wise.f02.com.conf
+
+![](./media/image32.png){width="6.267716535433071in" height="3.25in"}
+
+Restart service apache2, testing:
+
+![](./media/image41.png){width="6.267716535433071in"
+height="3.2777777777777777in"}
+
+**12. Tidak hanya itu, Loid juga ingin menyiapkan error file 404.html pada folder /error untuk mengganti error kode pada apache**
+
+Isi /etc/apache2/sites-available/eden.wise.f02.com.conf
+
+![](./media/image18.png){width="6.267716535433071in"
+height="3.263888888888889in"}
+
+Restart service apache2, testing:
+
+![](./media/image42.png){width="6.267716535433071in" height="3.25in"}
+
+**13. Loid juga meminta Franky untuk dibuatkan konfigurasi virtual host. Virtual host ini bertujuan untuk dapat mengakses file asset www.eden.wise.yyy.com/public/js menjadi www.eden.wise.yyy.com/js**
+
+Isi /etc/apache2/sites-available/eden.wise.f02.com.conf
+
+![](./media/image20.png){width="6.267716535433071in"
+height="3.263888888888889in"}
+
+Enable module rewrite dan restart service apache2, testing:
+
+![](./media/image26.png){width="6.267716535433071in" height="3.25in"}
+
 
 **14. Loid meminta agar www.strix.operation.wise.yyy.com hanya bisa diakses dengan port 15000 dan port 15500**
 
