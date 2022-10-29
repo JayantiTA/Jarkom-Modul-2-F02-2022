@@ -128,6 +128,278 @@ apt update
 apt install dnsutils -y
 ```
 
+2. Untuk mempermudah mendapatkan informasi mengenai misi dari Handler, bantulah Loid membuat website utama dengan akses wise.yyy.com dengan alias www.wise.yyy.com pada folder wise
+
+Lakukan perintah pada WISE. Isikan seperti berikut:
+```bash
+nano /etc/bind/named.conf.local
+```
+
+Isikan configurasi domain wise.f02.com sesuai dengan syntax berikut:
+
+```bash
+zone "wise.f02.com" {
+	type master;
+	file "/etc/bind/wise/wise.f02.com";
+};
+```
+
+//
+
+Buat folder wise di dalam /etc/bind
+
+```bash
+mkdir /etc/bind/wise
+```
+
+Copykan file db.local pada path /etc/bind ke dalam folder wise yang baru saja dibuat dan ubah namanya menjadi wise.f02.com
+
+```bash
+cp /etc/bind/db.local /etc/bind/wise/wise.f02.com
+```
+
+Kemudian buka file wise.f02.com dan edit seperti gambar berikut 
+```bash
+nano /etc/bind/wise/wise.f02.com
+```
+
+//
+
+Restart bind9 dengan perintah
+
+```bash
+service bind9 restart
+
+ATAU
+
+named -g //Bisa digunakan untuk restart sekaligus debugging
+```
+
+Hasil ping wise.f02.com
+
+//
+
+3. Setelah itu ia juga ingin membuat subdomain eden.wise.yyy.com dengan alias www.eden.wise.yyy.com yang diatur DNS-nya di WISE dan mengarah ke Eden
+
+Pada WISE, edit file /etc/bind/wise/wise.f02.com lalu tambahkan subdomain untuk eden.wise.f02.com yang mengarah ke IP Eden.
+
+```bash
+nano /etc/bind/wise/wise.f02.com
+```
+
+Tambahkan konfigurasi seperti di bawah ke dalam file wise.f02.com.
+```bash
+eden   IN      A       192.200.2.3
+www.eden IN    CNAME   eden.wise.f02.com.
+```
+
+//
+
+Restart service bind
+```bash
+service bind9 restart
+```
+
+Ping ke subdomain dengan perintah berikut dari client
+```bash 
+ping eden.wise.f02.com -c 5
+
+ATAU
+
+host -t A eden.wise.f02.com
+```
+
+//
+
+4. Buat juga reverse domain untuk domain utama
+
+Edit file /etc/bind/named.conf.local pada WISE
+```bash
+nano /etc/bind/named.conf.local
+```
+
+Lalu tambahkan konfigurasi berikut ke dalam file named.conf.local. Tambahkan reverse dari 3 byte awal dari IP yang ingin dilakukan Reverse DNS. IP 192.200.2 untuk IP dari records, maka reversenya adalah 2.200.192
+
+```bash
+zone "2.200.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/wise/2.200.192.in-addr.arpa";
+};
+```
+
+Copykan file db.local pada path /etc/bind ke dalam folder wise yang baru saja dibuat dan ubah namanya menjadi 2.200.192.in-addr.arpa
+
+```bash
+cp /etc/bind/db.local /etc/bind/wise/2.200.192.in-addr.arpa
+```
+
+Kemudian restart bind9 dengan perintah
+```bash
+service bind9 restart
+```
+
+Untuk mengecek apakah konfigurasi sudah benar atau belum, lakukan perintah berikut pada client
+```bash
+apt-get update
+apt-get install dnsutils
+```
+Kembalikan nameserver di /etc/resolv.conf dengan IP WISE 
+
+//
+
+Maka dicek menggunakan command :
+```bash
+host -t PTR 192.200.2.2
+```
+
+//
+
+5. Agar dapat tetap dihubungi jika server WISE bermasalah, buatlah juga Berlint sebagai DNS Slave untuk domain utama
+
+I. Konfigurasi Pada Server WISE
+Edit file /etc/bind/named.conf.local dan sesuaikan dengan syntax berikut
+```bash
+zone "wise.f02.com" {
+    type master;
+    notify yes;
+    also-notify { 192.200.3.2; }; // Masukan IP Berlint 
+    allow-transfer { 192.200.3.2; }; // Masukan IP Berlint 
+    file "/etc/bind/wise/wise.f02.com";
+};
+```
+
+//
+
+Lakukan restart bind9
+```bash
+service bind9 restart
+```
+
+II. Konfigurasi pada Server Berlint
+
+Buka Berlint dan update package lists dan install aplikasi bind9 dengan menjalankan command:
+```bash
+apt-get update
+apt-get install bind9 -y
+```
+Kemudian buka file /etc/bind/named.conf.local pada Berlint dan tambahkan syntax berikut:
+```bash
+zone "wise.f02.com" {
+    type slave;
+    masters { 192.200.2.2; }; // Masukan IP WISE
+    file "/var/lib/bind/wise.f02.com";
+};
+```
+
+Lakukan restart bind9
+```bash
+service bind9 restart
+```
+
+III. Testing
+Pada server WISE matikan service bind9
+```bash
+service bind9 stop
+```
+
+Pada client pastikan pengaturan nameserver mengarah ke IP WISE dan IP Berlint
+
+//
+
+Lakukan ping ke wise.f02.com pada client. Jika ping berhasil maka konfigurasi DNS slave telah berhasil
+
+//
+
+6. Karena banyak informasi dari Handler, buatlah subdomain yang khusus untuk operation yaitu operation.wise.yyy.com dengan alias www.operation.wise.yyy.com yang didelegasikan dari WISE ke Berlint dengan IP menuju ke Eden dalam folder operation
+
+```bash
+nano /etc/bind/wise/wise.f02.com
+```
+
+// 
+
+Kemudian edit file /etc/bind/named.conf.options pada WISE.
+```bash
+nano /etc/bind/named.conf.options
+```
+
+Kemudian comment dnssec-validation auto; dan tambahkan baris berikut pada /etc/bind/named.conf.options
+```bash
+allow-query{any;};
+```
+
+Kemudian edit file /etc/bind/named.conf.local menjadi seperti gambar di bawah:
+zone "wise.f02.com" {
+    type master;
+    file "/etc/bind/wise/wise.f02.com";
+    allow-transfer { 192.200.3.2; }; // Masukan IP Berlint
+};
+
+restart bind9
+```bash
+service bind9 restart
+```
+II. Konfigurasi Pada Server Berlint
+Pada Berlint edit file /etc/bind/named.conf.options
+```bash
+nano /etc/bind/named.conf.options
+```
+
+Kemudian comment dnssec-validation auto; dan tambahkan baris berikut pada /etc/bind/named.conf.options
+```bash
+allow-query{any;};
+```
+
+Lalu edit file /etc/bind/named.conf.local menjadi seperti gambar di bawah:
+
+//
+
+Kemudian buat direktori dengan nama operation. Copy db.local ke direktori tersebut dan edit namanya menjadi its.jarkom2022.com
+```bash
+mkdir /etc/bind/operation
+cp /etc/bind/db.local /etc/bind/wise/operation.wise.f02.com
+```
+
+Kemudian edit file operation.wise.f02.com menjadi seperti dibawah ini
+```bash
+nano /etc/bind/operation/operation.wise.f02.com
+```
+Restart bind9
+```bash
+service bind9 restart
+```
+
+III. Testing
+
+Ping operation.wise.f02.com pada client 
+
+//
+
+7. Untuk informasi yang lebih spesifik mengenai Operation Strix, buatlah subdomain melalui Berlint dengan akses strix.operation.wise.yyy.com dengan alias www.strix.operation.wise.yyy.com yang mengarah ke Eden
+
+Pada server Berlint buat domain untuk strix.operation.wise.f02.com dengan alias www.strix.operation.wise.f02.com. Instalasi bind terlebih dahulu
+```bash
+apt-get update
+apt-get install bind9 -y
+```
+Edit folder operation.wise.f02.com
+```bash
+nano /etc/bind/operation/operation.wise.f02.com
+```
+edit seperti dibawah ini :
+
+//
+
+Restart bind9
+```bash
+service bind9 restart
+```
+
+Lakukan ping ke domain strix.operation.wise.f02.com dan www.strix.operation.wise.f02.com dari client
+
+//
+
+
 **14. Loid meminta agar www.strix.operation.wise.yyy.com hanya bisa diakses dengan port 15000 dan port 15500**
 
 Tambahkan configuration pada /etc/apache2/sites-available/strix.operation.wise.f02.com.conf
