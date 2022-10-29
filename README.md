@@ -275,7 +275,7 @@ zone "wise.f02.com" {
 };
 ```
 
-//
+![](./media/5.1.png)
 
 Lakukan restart bind9
 
@@ -317,11 +317,11 @@ service bind9 stop
 
 Pada client pastikan pengaturan nameserver mengarah ke IP WISE dan IP Berlint
 
-//
+![](./media/5.2.png)
 
 Lakukan ping ke wise.f02.com pada client. Jika ping berhasil maka konfigurasi DNS slave telah berhasil
 
-//
+![](./media/5.3.png)
 
 **6. Karena banyak informasi dari Handler, buatlah subdomain yang khusus untuk operation yaitu operation.wise.yyy.com dengan alias www.operation.wise.yyy.com yang didelegasikan dari WISE ke Berlint dengan IP menuju ke Eden dalam folder operation**
 
